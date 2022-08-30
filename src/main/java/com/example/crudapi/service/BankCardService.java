@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class BankCardService {
     @Autowired
@@ -16,7 +18,6 @@ public class BankCardService {
     @Autowired
     ResponseMessageServiceImpl responseMsgServiceImpl;
 
-    BankCard myBankCard;
     ResponseEntity<?> responseBankCard = null;
     ResponseMessage responseMessage = new ResponseMessage();
 
@@ -24,7 +25,7 @@ public class BankCardService {
     public ResponseEntity<?> registerBankCard(BankCard bankCard) {
         responseBankCard = bankCardHisImpl.registerBankCardHistory(bankCard);
         if (responseBankCard.getStatusCode() == HttpStatus.CREATED) {
-            String getBody = responseBankCard.getBody().toString();
+            String getBody = Objects.requireNonNull(responseBankCard.getBody()).toString();
             responseMessage = responseMsgServiceImpl.prepareBankCardResponseMessage(getBody);
             return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
         }
@@ -33,10 +34,11 @@ public class BankCardService {
 
     public ResponseEntity<?> deposit(double amt, String cardNumber) {
 
-        responseBankCard = bankCardHisImpl.addDeposit(amt, cardNumber);
+        responseBankCard = bankCardHisImpl.addDepositHis(amt, cardNumber);
         if (responseBankCard.getStatusCode() == HttpStatus.CREATED) {
-            String getBody = responseBankCard.getBody().toString();
-            responseMsgServiceImpl.prepareBankCardResponseMessage(getBody);
+            String getBody = Objects.requireNonNull(responseBankCard.getBody()).toString();
+            responseMessage = responseMsgServiceImpl.prepareBankCardResponseMessage(getBody);
+            return new ResponseEntity<>(responseMessage, HttpStatus.OK);
         }
         return responseBankCard;
     }

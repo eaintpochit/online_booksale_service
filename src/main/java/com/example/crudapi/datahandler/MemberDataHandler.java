@@ -30,13 +30,13 @@ public class MemberDataHandler {
         return null;
     }
 
-    public List<Member> findAllMerber() {
+    public List<Member> findAllMber() {
         List<Member> mberList = mberRepo.findAll();
 
         return mberList == null ? null : mberList;
     }
 
-    public Member searchMemberByUserInput(String mberId) {
+    public Member searchMberById(String mberId) {
 
         if (!mberId.isEmpty())
             mber = mberRepo.searchByMberId(mberId);
@@ -44,10 +44,5 @@ public class MemberDataHandler {
         return mber == null ? null : mber;
     }
 
-    public Member searchMberByMberName(String mberName) {
-        mber = mberRepo.searchByMberName(mberName);
-
-        return mber == null ? null : mber;
-    }
 
 }

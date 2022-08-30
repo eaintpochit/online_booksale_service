@@ -40,11 +40,10 @@ public class BookService {
 
     ResponseEntity<?> response;
 
-    public ResponseEntity<?> saveBookInHistory(Book requestBook) {
+    public ResponseEntity<?> saveBook(Book requestBook) {
         response = bookHisServiceImpl.saveBookHistory(requestBook);
-        String getBody = Objects.requireNonNull(response.getBody()).toString();
-        HttpStatus httpStatus = response.getStatusCode();
-        if (httpStatus == HttpStatus.CREATED) {
+        if (response.getStatusCode() == HttpStatus.CREATED) {
+            String getBody = Objects.requireNonNull(response.getBody()).toString();
             responseMessage = responseMsgServiceImpl.prepareBookResponseMessage(getBody);
             return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
         }
@@ -94,8 +93,8 @@ public class BookService {
 
     }
 
-    public ResponseEntity<?> prepareBookforPurchase(String sbookId, String sbookName, String sauthor) {
-        return bookServiceImpl.prepareBookforPurchase(sbookId, sbookName, sauthor);
+    public ResponseEntity<?> prepareBookforPurchase(String sbookId) {
+        return bookServiceImpl.prepareBookforPurchase(sbookId);
     }
 
 

@@ -41,26 +41,29 @@ public class MemberServiceImpl {
 
             mber = memberDataHandler.validatMberRegister(mberId, mberNRC);
 
-        } catch (NullPointerException ignored) {
+        } catch (NullPointerException ignored) {}
+
+        if (mber == null) {
+
+            Date memRegisterDate = dateUtil.getCurrentDateTime();
+            member.setRegisterDate(memRegisterDate);
+            mber = mberRepo.save(member);
+
+            return new ResponseEntity<>(gson.toJson(mber), HttpStatus.CREATED);
         }
 
-        if (mber != null) {
-            responseMessage.setStatusMessage(ResponseConstant.mber_search_exit);
-            return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.NOT_IMPLEMENTED);
-        }
+        if(mber.getMemberId().equals(mberId))
+            responseMessage.setStatusMessage(ResponseConstant.mber_id_same);
+        if(mber.getMemberNRC().equals(mberNRC))
+            responseMessage.setStatusMessage(ResponseConstant.mber_Nrc_same);
 
-        Date memRegisterDate = dateUtil.getCurrentDateTime();
-        member.setRegisterDate(memRegisterDate);
-        mber = mberRepo.save(member);
-
-        return new ResponseEntity<>(gson.toJson(mber), HttpStatus.CREATED);
-
+        return new ResponseEntity<>(responseMessage.getStatusMessage(),HttpStatus.NOT_IMPLEMENTED);
 
     }
 
     public ResponseEntity<?> showAllMember() {
 
-        List<Member> mberList = memberDataHandler.findAllMerber();
+        List<Member> mberList = memberDataHandler.findAllMber();
 
         if (mberList.isEmpty()) {
             responseMessage.setStatusMessage(ResponseConstant.mber_empty);
@@ -77,7 +80,7 @@ public class MemberServiceImpl {
 
     public ResponseEntity<?> updateMember(String smberId, String mberId, String mberName, String mberDob, double mberFees) {
         try {
-            mber = memberDataHandler.searchMemberByUserInput(smberId);
+            mber = memberDataHandler.searchMberById(smberId);
         } catch (NullPointerException ignored) {
         }
 
@@ -103,7 +106,7 @@ public class MemberServiceImpl {
     public ResponseEntity<?> findMberByUserInput(String mberId) {
 
         try {
-            mber = memberDataHandler.searchMemberByUserInput(mberId);
+            mber = memberDataHandler.searchMberById(mberId);
         } catch (NullPointerException ignored) {
         }
 
@@ -139,18 +142,6 @@ public class MemberServiceImpl {
         return new ResponseEntity<>(gson.toJson(mber), HttpStatus.OK);
     }
 
-    public ResponseEntity<?> validateMber(String mberName) {
-        try {
-            mber = memberDataHandler.searchMberByMberName(mberName);
-        } catch (NullPointerException ignored) {
-        }
 
-        if (mber == null) {
-            responseMessage.setStatusMessage(ResponseConstant.mber_search_no_exit);
-            return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(gson.toJson(mber), HttpStatus.FOUND);
-    }
 
 }

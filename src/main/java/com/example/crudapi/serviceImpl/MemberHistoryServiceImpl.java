@@ -75,7 +75,7 @@ public class MemberHistoryServiceImpl {
 
         if (response.getStatusCode() == HttpStatus.OK) {
 
-            String status = ResponseConstant.book_delete_success;
+            String status = ResponseConstant.mber_delete_success;
             String date = Instant.now().toString();
             String strData = Objects.requireNonNull(response.getBody()).toString();
 

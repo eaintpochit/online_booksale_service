@@ -47,17 +47,20 @@ public class BookServiceImpl {
 
             myBook = bookDataHandler.valideSaveBook(bookId, author, bookName);
 
-        } catch (NullPointerException ignored) {
-        }
+        } catch (NullPointerException ignored) {}
 
         if (myBook == null) {
             myBook = bookRepo.save(requestBody);
             return new ResponseEntity<>(gson.toJson(myBook), HttpStatus.CREATED);
         }
 
-        responseMessage.setStatusMessage(ResponseConstant.book_search_exit);
-        return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.NOT_IMPLEMENTED);
-
+        if(myBook.getBookId().equals(bookId)) {
+            responseMessage.setStatusMessage(ResponseConstant.book_id_same);
+            return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.NOT_IMPLEMENTED);
+        }else {
+            responseMessage.setStatusMessage(ResponseConstant.book_nameauthor_same);
+            return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.NOT_IMPLEMENTED);
+        }
 
     }
 
@@ -86,16 +89,19 @@ public class BookServiceImpl {
         } catch (NullPointerException ignored) {
         }
 
-        if (objBook == null) {
-            responseMessage.setStatusMessage(ResponseConstant.book_search_no_exit);
-            return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.NOT_FOUND);
+        if (objBook != null) {
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("Book", objBook);
+            responseMessage.setData(map);
+
+            return new ResponseEntity<>(responseMessage.getData(), HttpStatus.FOUND);
+
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("Book", objBook);
-        responseMessage.setData(map);
-        return new ResponseEntity<>(responseMessage.getData(), HttpStatus.FOUND);
+        responseMessage.setStatusMessage(ResponseConstant.book_search_no_exit);
 
+        return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.NOT_FOUND);
 
     }
 
@@ -146,28 +152,11 @@ public class BookServiceImpl {
         return new ResponseEntity<>(gson.toJson(myBook), HttpStatus.OK);
     }
 
-    public ResponseEntity<?> validateRequestBook(String id, String bookName, String author) {
 
-        Object bookObj = null;
-
-        try {
-            bookObj = bookLoaderService.requestBook(id, bookName, author);
-        } catch (NullPointerException ignored) {
-        }
-
-        if (bookObj == null) {
-            responseMessage.setStatusMessage(ResponseConstant.book_search_no_exit);
-            return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(gson.toJson(bookObj), HttpStatus.FOUND);
-
-    }
-
-    public ResponseEntity<?> prepareBookforPurchase(String sId, String sbkName, String sauthor) {
+    public ResponseEntity<?> prepareBookforPurchase(String sId) {
         Object bookObj = null;
         try {
-            bookObj = bookDataHandler.showBookByUserInputData(sId, sbkName, sauthor);
+            bookObj = bookDataHandler.prepareBookforpurchase(sId);
         } catch (NullPointerException ignored) {
         }
 

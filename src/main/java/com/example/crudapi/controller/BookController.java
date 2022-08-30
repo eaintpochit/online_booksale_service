@@ -16,7 +16,7 @@ public class BookController {
 
     @PostMapping(value = "/saveBook", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> saveBookData(@RequestBody Book bk) {
-        return bkService.saveBookInHistory(bk);
+        return bkService.saveBook(bk);
     }
 
 
@@ -55,11 +55,9 @@ public class BookController {
 
     }
 
-    @GetMapping("/preparebookforpurchase")
-    public ResponseEntity<?> searchBookById(@RequestParam(value = "bookId", required = false) String id,
-                                            @RequestParam(name = "bookName", required = false) String bkName,
-                                            @RequestParam(name = "author", required = false) String author) {
-        return bkService.prepareBookforPurchase(id, bkName, author);
+    @GetMapping("/preparebookforsale")
+    public ResponseEntity<?> prepreBookforsale(@RequestParam(value = "bookId", required = false) String id) {
+        return bkService.prepareBookforPurchase(id);
     }
 
 

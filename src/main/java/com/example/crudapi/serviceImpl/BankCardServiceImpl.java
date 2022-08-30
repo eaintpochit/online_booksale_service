@@ -38,19 +38,21 @@ public class BankCardServiceImpl {
         } catch (NullPointerException ignored) {
         }
 
-        if (myBankCard != null) {
-            if (myBankCard.getNrc().equals(bankCardNrc))
-                responseMessage.setStatusMessage(ResponseConstant.bankCard_Nrc_Same);
-            if (myBankCard.getCardNumber().equals(bankCardNumber)) {
-                responseMessage.setStatusMessage(ResponseConstant.bankCard_Number_Same);
-            }
+        if (myBankCard == null) {
+            myBankCard = bankCardRepo.save(bankCard);
 
-            return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.FOUND);
+            return new ResponseEntity<>(gson.toJson(myBankCard), HttpStatus.CREATED);
         }
 
-        myBankCard = bankCardRepo.save(bankCard);
+        if (myBankCard.getNrc().equals(bankCardNrc))
+            responseMessage.setStatusMessage(ResponseConstant.bankCard_Nrc_Same);
+        if (myBankCard.getCardNumber().equals(bankCardNumber)) {
+            responseMessage.setStatusMessage(ResponseConstant.bankCard_Number_Same);
+        }
 
-        return new ResponseEntity<>(gson.toJson(myBankCard), HttpStatus.CREATED);
+        return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.FOUND);
+
+
     }
 
     public ResponseEntity<?> addDeposit(double amt, String cardNumber) {
@@ -73,20 +75,5 @@ public class BankCardServiceImpl {
     }
 
 
-    public ResponseEntity<?> validateCardNumber(String cardNumber) {
-
-        try {
-            myBankCard = bankCardDataHandler.validateCardNumber(cardNumber);
-        } catch (NullPointerException ignored) {
-        }
-
-        if (myBankCard == null) {
-            responseMessage.setStatusMessage(ResponseConstant.bankCard_number_invalid);
-            return new ResponseEntity<>(responseMessage.getStatusMessage(), HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(gson.toJson(myBankCard), HttpStatus.FOUND);
-
-    }
 
 }

@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 
 @Service
 public class PurchaseBookService {
@@ -37,12 +39,11 @@ public class PurchaseBookService {
     ResponseMessage responseMessage = new ResponseMessage();
     Gson gson = new Gson();
 
-    public ResponseEntity<?> purchaseBookService(String id, String bookName, String author,
-                                                 String cardNumber, int bookNumber, String mberName) {
+    public ResponseEntity<?> purchaseBookService(String id, String cardNumber, int bookNumber, String mberId) {
         Book book = new Book();
-        ResponseEntity<?> response = bookPurchaseHisImpl.PurchaseBookServiceHistory(id, bookName, author, cardNumber, bookNumber, mberName);
+        ResponseEntity<?> response = bookPurchaseHisImpl.PurchaseBookServiceHistory(id, cardNumber, bookNumber, mberId);
         if (response.getStatusCode() == HttpStatus.OK) {
-            String strBook = response.getBody().toString();
+            String strBook = Objects.requireNonNull(response.getBody()).toString();
             try {
                 JsonObject jsonObject = gson.fromJson(strBook, JsonObject.class);
                 pHistory = gson.fromJson(jsonObject, PurchaseHistory.class);

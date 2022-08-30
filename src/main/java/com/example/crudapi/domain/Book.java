@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+
 @Entity
 public class Book {
 
@@ -20,6 +21,7 @@ public class Book {
     private String publisher;
     @Column
     private int quantity;
+
 
     public String getBookId() {
         return bookId;

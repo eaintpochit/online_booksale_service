@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @Component
 public class BankCardHistoryServiceImpl {
@@ -29,10 +30,10 @@ public class BankCardHistoryServiceImpl {
         response = bankCardServiceImpl.registerBankCard(bankCard);
 
         if (response.getStatusCode() == HttpStatus.CREATED) {
-            String getBody = response.getBody().toString();
-            String status = ResponseConstant.bankCard_Deposit_Success;
+            String getBody = Objects.requireNonNull(response.getBody()).toString();
+            String status = ResponseConstant.bankCard_register;
             String dateTime = Instant.now().toString();
-            bankCardHistory = prepareBankHistory(getBody, status, dateTime);
+            bankCardHistory = prepareBankHistory(status, dateTime, getBody);
 
             return new ResponseEntity<>(gson.toJson(bankCardHistory), HttpStatus.CREATED);
 
@@ -41,15 +42,15 @@ public class BankCardHistoryServiceImpl {
 
     }
 
-    public ResponseEntity addDeposit(double amt, String cardNumber) {
+    public ResponseEntity<?> addDepositHis(double amt, String cardNumber) {
         response = bankCardServiceImpl.addDeposit(amt, cardNumber);
-        if (response.getStatusCode() == HttpStatus.CREATED) {
-            String getBody = response.getBody().toString();
+        if (response.getStatusCode() == HttpStatus.OK) {
+            String getBody = Objects.requireNonNull(response.getBody()).toString();
             String status = ResponseConstant.bankCard_Deposit_Success;
             String dateTime = Instant.now().toString();
-            bankCardHistory = prepareBankHistory(getBody, status, dateTime);
+            bankCardHistory = prepareBankHistory(status, dateTime, getBody);
 
-            return new ResponseEntity(gson.toJson(bankCardHistory), HttpStatus.CREATED);
+            return new ResponseEntity<>(gson.toJson(bankCardHistory), HttpStatus.CREATED);
         }
         return response;
     }

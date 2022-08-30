@@ -44,7 +44,7 @@ public class BookDataHandler {
         if (!author.isEmpty())
             objBook = bookRepo.searchByAuthor(author);
 
-        return objBook == null ? null : objBook;
+        return objBook.equals(null) ? null : objBook;
     }
 
     public Book prepareBookforpurchase(String bookId) {

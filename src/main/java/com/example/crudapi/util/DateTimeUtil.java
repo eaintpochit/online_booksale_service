@@ -4,11 +4,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -35,14 +32,5 @@ public class DateTimeUtil {
 
     }
 
-    public String getStringDate() {
-        String date = null;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-        try {
-            date = formatter.format(Instant.now());
-        } catch (DateTimeException de) {
-        }
-        return date;
-    }
 }
